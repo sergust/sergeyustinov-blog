@@ -3,7 +3,7 @@ import Login from "./login";
 
 export default function Nav() {
   return (
-    <nav className="flex items-center gap-4">
+    <nav className="my-2 flex items-center gap-4 py-4">
       <a href="/blog" className="ml-4">
         Blog
       </a>
