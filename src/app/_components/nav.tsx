@@ -3,11 +3,6 @@
 import { ModeToggle } from "@/components/theme-mode-toggle";
 import Login from "./login";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useUser } from "@clerk/clerk-react";
 import {
   DropdownMenu,
