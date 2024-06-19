@@ -17,6 +17,7 @@ import Heading from "@tiptap/extension-heading";
 import Headers from "./editor-components/headers";
 import Strike from "@tiptap/extension-strike";
 import Code from "@tiptap/extension-code";
+import Paragraph from "@tiptap/extension-paragraph";
 
 function MenuBar() {
   const { editor } = useCurrentEditor();
@@ -101,6 +102,7 @@ function MenuBar() {
 export default function RichTextEditor({ content }: { content: string }) {
   const extensions = [
     StarterKit,
+    Paragraph,
     Underline,
     Link.configure({
       HTMLAttributes: {
