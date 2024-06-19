@@ -117,7 +117,7 @@ export default function RichTextEditor({ content }: { content: string }) {
   ];
 
   return (
-    <div className="w-full rounded-lg border p-8 ">
+    <div className="h-full w-full rounded-lg border p-8 ">
       <EditorProvider
         slotBefore={<MenuBar />}
         extensions={extensions}
