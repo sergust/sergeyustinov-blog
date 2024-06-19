@@ -1,9 +1,9 @@
-import Tiptap from "@/components/admin/tiptap";
+import RichTextEditor from "@/components/admin/editor";
 
 export default function AdminPage() {
   return (
     <main className="container flex min-h-screen">
-      <Tiptap />
+      <RichTextEditor content="" />
     </main>
   );
 }
