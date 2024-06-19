@@ -65,7 +65,15 @@ function MenuBar() {
 }
 
 export default function RichTextEditor({ content }: { content: string }) {
-  const extensions = [StarterKit, Underline, Link];
+  const extensions = [
+    StarterKit,
+    Underline,
+    Link.configure({
+      HTMLAttributes: {
+        class: "text-blue-500 underline",
+      },
+    }),
+  ];
 
   return (
     <div className="w-full rounded-lg border p-8 drop-shadow-md">
