@@ -93,4 +93,8 @@
   h6 {
     @apply text-lg font-normal;
   }
+
+  code {
+    @apply rounded-sm bg-slate-200 p-1 font-mono text-sm text-slate-700;
+  }
 }
