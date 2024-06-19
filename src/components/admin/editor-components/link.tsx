@@ -2,20 +2,7 @@ import React from "react";
 import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useCurrentEditor } from "@tiptap/react";
-import { cn } from "@/lib/utils";
 import { LinkIcon, UnlinkIcon } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 
 export default function EditorLink() {
   const { editor } = useCurrentEditor();

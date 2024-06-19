@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { Underline } from "@tiptap/extension-underline";
 import { Link } from "@tiptap/extension-link";
 import EditorLink from "./editor-components/link";
+import Heading from "@tiptap/extension-heading";
+import Headers from "./editor-components/headers";
 
 function MenuBar() {
   const { editor } = useCurrentEditor();
@@ -17,6 +19,7 @@ function MenuBar() {
 
   return (
     <div className="mb-4 flex gap-2">
+      <Headers />
       <Button
         variant="outline"
         size="icon"
@@ -70,8 +73,11 @@ export default function RichTextEditor({ content }: { content: string }) {
     Underline,
     Link.configure({
       HTMLAttributes: {
-        class: "text-blue-500 underline",
+        class: "text-blue-500 underline cursor-pointer",
       },
+    }),
+    Heading.configure({
+      levels: [2, 3, 4, 5, 6],
     }),
   ];
 
