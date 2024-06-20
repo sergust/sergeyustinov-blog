@@ -1,0 +1,15 @@
+/* Placeholder (at the top) */
+p.is-editor-empty:first-child::before {
+  @apply text-gray-400;
+  content: attr(data-placeholder);
+  float: left;
+  pointer-events: none;
+}
+
+/* Placeholder (on every new line) */
+.is-empty::before {
+  @apply text-gray-400;
+  content: attr(data-placeholder);
+  float: left;
+  pointer-events: none;
+}

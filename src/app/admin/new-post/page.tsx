@@ -1,10 +1,23 @@
-import RichTextEditor from "@/components/admin/editor";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import React from "react";
+import React, { useState } from "react";
+import RichTextEditor from "@/components/admin/editor-components/editor";
 
 function NewPostPage() {
+  const [content, setContent] = useState("");
+  const [post, setPost] = useState({
+    title: "",
+    slug: "",
+    picture: "",
+  });
+
+  function updatePost(key: string, value: string) {
+    setPost((prev) => ({ ...prev, [key]: value }));
+  }
+
   return (
     <section className="container flex min-h-screen flex-col">
       <div className="flex items-center justify-between">
@@ -13,13 +26,24 @@ function NewPostPage() {
       </div>
       <div className="my-6">
         <Label htmlFor="post-title">Post title</Label>
-        <Input id="post-title" className="text-xl font-extrabold" />
+        <Input
+          id="post-title"
+          className="text-xl font-extrabold"
+          onChange={(e) => updatePost("title", e.target.value)}
+        />
       </div>
-      <div className="my-6 grid w-full items-center gap-1.5">
+      <div className="my-3">
+        <Label htmlFor="post-slug">Slug</Label>
+        <Input
+          id="post-slug"
+          onChange={(e) => updatePost("slug", e.target.value)}
+        />
+      </div>
+      <div className="my-3 grid w-full items-center gap-1.5">
         <Label htmlFor="picture">Picture</Label>
         <Input id="picture" type="file" />
       </div>
-      <RichTextEditor content="" />
+      <RichTextEditor content={content} setContent={setContent} />
     </section>
   );
 }

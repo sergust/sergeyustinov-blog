@@ -1,5 +1,6 @@
 "use client";
-import { useCurrentEditor, EditorProvider } from "@tiptap/react";
+import "./styles.css";
+import { useCurrentEditor, EditorProvider, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
   BoldIcon,
@@ -8,16 +9,18 @@ import {
   StrikethroughIcon,
   UnderlineIcon,
 } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
 import { Underline } from "@tiptap/extension-underline";
 import { Link } from "@tiptap/extension-link";
-import EditorLink from "./editor-components/link";
+import EditorLink from "./link";
 import Heading from "@tiptap/extension-heading";
-import Headers from "./editor-components/headers";
+import Headers from "./headers";
 import Strike from "@tiptap/extension-strike";
 import Code from "@tiptap/extension-code";
 import Paragraph from "@tiptap/extension-paragraph";
+import Placeholder from "@tiptap/extension-placeholder";
+import { type Dispatch, type SetStateAction } from "react";
 
 function MenuBar() {
   const { editor } = useCurrentEditor();
@@ -99,7 +102,13 @@ function MenuBar() {
   );
 }
 
-export default function RichTextEditor({ content }: { content: string }) {
+export default function RichTextEditor({
+  content,
+  setContent,
+}: {
+  content: string;
+  setContent: Dispatch<SetStateAction<string>>;
+}) {
   const extensions = [
     StarterKit,
     Paragraph,
@@ -114,7 +123,23 @@ export default function RichTextEditor({ content }: { content: string }) {
     }),
     Strike,
     Code,
+    Placeholder.configure({
+      // Use a placeholder:
+      placeholder: "Write something …",
+      // Use different placeholders depending on the node type:
+      // placeholder: ({ node }) => {
+      //   if (node.type.name === 'heading') {
+      //     return 'What’s the title?'
+      //   }
+
+      //   return 'Can you add some further context?'
+      // },
+    }),
   ];
+
+  function handleUpdate(content: Editor) {
+    setContent(content.getHTML());
+  }
 
   return (
     <div className="h-full w-full rounded-lg border p-8 ">
@@ -122,6 +147,7 @@ export default function RichTextEditor({ content }: { content: string }) {
         slotBefore={<MenuBar />}
         extensions={extensions}
         content={content}
+        onUpdate={({ editor }) => handleUpdate(editor)}
       >
         <></>
       </EditorProvider>
