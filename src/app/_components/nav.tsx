@@ -14,11 +14,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignInButton } from "@clerk/nextjs";
 
-export default function Nav() {
+export default function Nav({ isAdmin }: { isAdmin?: boolean }) {
   const { user } = useUser();
+
   return (
     <nav className="my-2 flex items-center gap-4 py-4">
       <div className="hidden items-center gap-4 py-4 md:flex">
+        {isAdmin && <Button>Admin</Button>}
         <Search />
         <ModeToggle />
         <Login />
@@ -32,12 +34,15 @@ export default function Nav() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {user ? (
-              <DropdownMenuLabel>
-                <div className="flex items-center gap-2">
-                  <span>{user?.fullName}</span>
-                  <Login />
-                </div>
-              </DropdownMenuLabel>
+              <>
+                <DropdownMenuLabel>
+                  <div className="flex items-center gap-2">
+                    <span>{user?.fullName}</span>
+                    <Login />
+                  </div>
+                </DropdownMenuLabel>
+                {isAdmin && <Button>Admin</Button>}
+              </>
             ) : (
               <DropdownMenuItem>
                 <SignInButton></SignInButton>

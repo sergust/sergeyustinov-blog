@@ -4,7 +4,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { dmSans } from "@/styles/fonts";
 import { Header } from "./_components/header";
-import Footer from "./_components/footer";
+import Footer from "@/app/_components/footer";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
