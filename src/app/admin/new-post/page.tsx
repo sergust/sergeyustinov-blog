@@ -24,6 +24,8 @@ function NewPostPage() {
   async function handleCreatePost() {
     const response = await createPostMutation.mutateAsync({
       title: post.title,
+      slug: post.slug,
+      content: content,
     });
 
     console.log(response);

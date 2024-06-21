@@ -16,15 +16,24 @@ export const postRouter = createTRPCRouter({
   //   }),
 
   create: protectedProcedure
-    .input(z.object({ title: z.string().min(1) }))
+    .input(
+      z.object({
+        title: z.string().min(1),
+        slug: z.string().optional(),
+        content: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      // if slug is empty, generate one from name
+      if (!input.slug) {
+        input.slug = input.title.toLowerCase().replace(/\s+/g, "-");
+      }
       return ctx.db.post.create({
         data: {
           name: input.title,
-          createdBy: { connect: { id: ctx.userId } },
+          createdById: ctx.userId,
+          slug: input.slug,
+          content: input.content,
         },
       });
     }),
