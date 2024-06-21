@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import RichTextEditor from "@/components/admin/editor-components/editor";
+import { api } from "@/trpc/react";
 
 function NewPostPage() {
   const [content, setContent] = useState("");
@@ -18,11 +19,23 @@ function NewPostPage() {
     setPost((prev) => ({ ...prev, [key]: value }));
   }
 
+  const createPostMutation = api.post.create.useMutation();
+
+  async function handleCreatePost() {
+    const response = await createPostMutation.mutateAsync({
+      title: post.title,
+    });
+
+    console.log(response);
+  }
+
   return (
     <section className="container flex min-h-screen flex-col">
       <div className="flex items-center justify-between">
         <h2>Create a post</h2>
-        <Button className="text-xl">✨ Post</Button>
+        <Button className="text-xl" onClick={() => handleCreatePost()}>
+          ✨ Post
+        </Button>
       </div>
       <div className="my-6">
         <Label htmlFor="post-title">Post title</Label>

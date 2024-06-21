@@ -10,9 +10,10 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
-import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
+import { type getAuth } from "@clerk/nextjs/server";
+
+type AuthObject = ReturnType<typeof getAuth>;
 
 /**
  * 1. CONTEXT
@@ -26,12 +27,13 @@ import { db } from "@/server/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await getServerAuthSession();
-
+export const createTRPCContext = async (opts: {
+  headers: Headers;
+  auth: AuthObject;
+}) => {
   return {
     db,
-    session,
+    userId: opts.auth.userId,
     ...opts,
   };
 };
@@ -95,14 +97,14 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
+
+/** Reusable middleware that enforces users are logged in before running the procedure. */
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
+  // Make ctx.userId non-nullable in protected procedures
+  return next({ ctx: { userId: ctx.userId } });
 });
+
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
