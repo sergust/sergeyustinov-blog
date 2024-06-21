@@ -105,9 +105,11 @@ function MenuBar() {
 export default function RichTextEditor({
   content,
   setContent,
+  disabled,
 }: {
   content: string;
   setContent: Dispatch<SetStateAction<string>>;
+  disabled?: boolean;
 }) {
   const extensions = [
     StarterKit,

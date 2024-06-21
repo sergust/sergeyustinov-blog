@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { dmSans } from "@/styles/fonts";
 import { Header } from "./_components/header";
 import Footer from "./_components/footer";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
   title: "Sergey Ustinov",
@@ -31,6 +32,7 @@ export default function RootLayout({
               <Header />
               {children}
               <Footer />
+              <Toaster />
             </ThemeProvider>
           </TRPCReactProvider>
         </body>
