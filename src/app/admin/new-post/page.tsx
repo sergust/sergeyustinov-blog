@@ -8,14 +8,9 @@ import RichTextEditor from "@/components/admin/editor-components/editor";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { checkRole } from "@/utils/roles";
 import { redirect } from "next/navigation";
 
 function NewPostPage() {
-  if (!checkRole("admin")) {
-    redirect("/");
-  }
-
   const [content, setContent] = useState("");
   const [post, setPost] = useState({
     title: "",
@@ -45,11 +40,16 @@ function NewPostPage() {
   const { isPending } = createPostMutation;
 
   async function handleCreatePost() {
-    const response = await createPostMutation.mutateAsync({
-      title: post.title,
-      slug: post.slug,
-      content: content,
-    });
+    try {
+      const response = await createPostMutation.mutateAsync({
+        title: post.title,
+        slug: post.slug,
+        content: content,
+      });
+      redirect(`/admin/posts/${response.id}`);
+    } catch (error) {
+      // console.error(error)
+    }
   }
 
   return (

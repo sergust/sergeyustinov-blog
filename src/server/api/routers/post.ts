@@ -28,6 +28,7 @@ export const postRouter = createTRPCRouter({
       if (!input.slug) {
         input.slug = input.title.toLowerCase().replace(/\s+/g, "-");
       }
+
       return ctx.db.post.create({
         data: {
           name: input.title,
@@ -38,14 +39,16 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  // getLatest: protectedProcedure.query(({ ctx }) => {
-  //   return ctx.db.post.findFirst({
-  //     orderBy: { createdAt: "desc" },
-  //     where: { createdBy: { id: ctx.session.user.id } },
-  //   });
-  // }),
+  getLatestPreviews: protectedProcedure.query(async ({ ctx }) => {
+    const posts = await ctx.db.post.findMany({
+      orderBy: { createdAt: "desc" },
+    });
 
-  // getSecretMessage: protectedProcedure.query(() => {
-  //   return "you can now see this secret message!";
-  // }),
+    const previews = posts.map((post) => ({
+      ...post,
+      content: post.content.substring(0, 100),
+    }));
+
+    return previews;
+  }),
 });

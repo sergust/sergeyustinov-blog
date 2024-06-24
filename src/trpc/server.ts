@@ -18,7 +18,7 @@ const createContext = cache(() => {
       cookie: cookies().toString(),
       "x-trpc-source": "rsc",
     }),
-    auth: getAuth(new NextRequest("", { headers: headers() })),
+    auth: getAuth(new NextRequest("htpp://nouse.com", { headers: headers() })),
   });
 });
 
