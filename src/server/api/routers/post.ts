@@ -1,3 +1,4 @@
+import { Block } from "@blocknote/core";
 import { z } from "zod";
 
 import {
@@ -20,7 +21,7 @@ export const postRouter = createTRPCRouter({
       z.object({
         title: z.string().min(1),
         slug: z.string().optional(),
-        content: z.string(),
+        content: z.array(z.object({})).default([]),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -34,7 +35,7 @@ export const postRouter = createTRPCRouter({
           name: input.title,
           createdById: ctx.userId,
           slug: input.slug,
-          content: input.content,
+          content: JSON.stringify(input.content),
         },
       });
     }),

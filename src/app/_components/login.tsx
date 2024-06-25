@@ -15,8 +15,8 @@ export default function Login() {
           <TooltipTrigger>
             <SignedOut>
               <SignInButton>
-                <Button asChild className="cursor-pointer" variant="outline">
-                  <span className="text-xl">👤</span>
+                <Button className="cursor-pointer" variant="outline">
+                  👤
                 </Button>
               </SignInButton>
             </SignedOut>

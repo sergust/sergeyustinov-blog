@@ -4,14 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
-import RichTextEditor from "@/components/admin/editor-components/editor";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { redirect } from "next/navigation";
+import dynamic from "next/dynamic";
+import { useMemo } from "react";
+import { type Block } from "@blocknote/core";
 
 function NewPostPage() {
-  const [content, setContent] = useState("");
+  const Editor = useMemo(
+    () =>
+      dynamic(
+        () => import("@/components/admin/editor-components/block-note-editor"),
+        { ssr: false },
+      ),
+    [],
+  );
+  const [blocks, setBlocks] = useState<Block[]>([]);
+
   const [post, setPost] = useState({
     title: "",
     slug: "",
@@ -44,7 +55,7 @@ function NewPostPage() {
       const response = await createPostMutation.mutateAsync({
         title: post.title,
         slug: post.slug,
-        content: content,
+        content: blocks,
       });
       redirect(`/admin/posts/${response.id}`);
     } catch (error) {
@@ -92,11 +103,12 @@ function NewPostPage() {
         <Label htmlFor="picture">Picture</Label>
         <Input id="picture" type="file" />
       </div>
-      <RichTextEditor
+      {/* <RichTextEditor
         content={content}
         setContent={setContent}
         disabled={isPending}
-      />
+      /> */}
+      <Editor onChange={setBlocks} />
     </section>
   );
 }
