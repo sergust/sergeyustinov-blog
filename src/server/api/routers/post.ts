@@ -21,7 +21,8 @@ export const postRouter = createTRPCRouter({
       z.object({
         title: z.string().min(1),
         slug: z.string().optional(),
-        content: z.array(z.object({})).default([]),
+        content: z.string(),
+        pictureUrl: z.string().url(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -30,12 +31,15 @@ export const postRouter = createTRPCRouter({
         input.slug = input.title.toLowerCase().replace(/\s+/g, "-");
       }
 
+      console.log(input.content);
+
       return ctx.db.post.create({
         data: {
           name: input.title,
           createdById: ctx.userId,
           slug: input.slug,
-          content: JSON.stringify(input.content),
+          content: input.content,
+          pictureUrl: input.pictureUrl,
         },
       });
     }),

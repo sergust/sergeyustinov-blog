@@ -16,9 +16,10 @@ model Post {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    name    String @unique
-    slug    String
-    content String
+    name       String @unique
+    slug       String
+    content    String
+    pictureUrl String
 
     createdById String
 

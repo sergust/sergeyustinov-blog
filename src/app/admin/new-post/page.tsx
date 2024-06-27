@@ -11,6 +11,8 @@ import { redirect } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import { type Block } from "@blocknote/core";
+import { UploadButton } from "@/utils/uploadthing";
+import Image from "next/image";
 
 function NewPostPage() {
   const Editor = useMemo(
@@ -26,8 +28,9 @@ function NewPostPage() {
   const [post, setPost] = useState({
     title: "",
     slug: "",
-    picture: "",
   });
+
+  const [pictureUrl, setPictureUrl] = useState<string>();
 
   function updatePost(key: string, value: string) {
     setPost((prev) => ({ ...prev, [key]: value }));
@@ -55,7 +58,8 @@ function NewPostPage() {
       const response = await createPostMutation.mutateAsync({
         title: post.title,
         slug: post.slug,
-        content: blocks,
+        content: JSON.stringify(blocks),
+        pictureUrl: pictureUrl || "",
       });
       redirect(`/admin/posts/${response.id}`);
     } catch (error) {
@@ -99,9 +103,27 @@ function NewPostPage() {
           disabled={isPending}
         />
       </div>
-      <div className="my-3 grid w-full items-center gap-1.5">
-        <Label htmlFor="picture">Picture</Label>
-        <Input id="picture" type="file" />
+      <div className="my-3 flex gap-4">
+        <UploadButton
+          endpoint="imageUploader"
+          onClientUploadComplete={(res) => {
+            setPictureUrl(res[0]!.url);
+            toast.success("Image uploaded", {
+              icon: "🚀",
+              description: "Image uploaded successfully",
+            });
+          }}
+          onUploadError={(error: Error) => {
+            toast.error("Error uploading image", {
+              description: error.message,
+              icon: "❌",
+            });
+          }}
+          className="my-2 justify-self-start"
+        />
+        {pictureUrl && (
+          <Image src={pictureUrl} width={200} height={200} alt="post picture" />
+        )}
       </div>
       {/* <RichTextEditor
         content={content}
