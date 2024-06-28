@@ -30,7 +30,7 @@ function NewPostPage() {
     slug: "",
   });
 
-  const [pictureUrl, setPictureUrl] = useState<string>();
+  const [pictureUrl, setPictureUrl] = useState<string | undefined>(undefined);
 
   function updatePost(key: string, value: string) {
     setPost((prev) => ({ ...prev, [key]: value }));
@@ -51,6 +51,21 @@ function NewPostPage() {
     },
   });
 
+  const deleteImageMutation = api.post.deleteImage.useMutation({
+    onSuccess() {
+      toast.success("Image deleted!", {
+        description: `Image was deleted successfully`,
+        icon: "🚀",
+      });
+    },
+    onError(error) {
+      toast.error("Error deleting image", {
+        description: error.message,
+        icon: "❌",
+      });
+    },
+  });
+
   const { isPending } = createPostMutation;
 
   async function handleCreatePost() {
@@ -63,14 +78,25 @@ function NewPostPage() {
       });
       redirect(`/admin/posts/${response.id}`);
     } catch (error) {
-      // console.error(error)
+      console.error(error);
+    }
+  }
+
+  async function handleDeleteImage() {
+    if (!pictureUrl) return;
+    try {
+      await deleteImageMutation.mutateAsync(pictureUrl);
+      setPictureUrl(undefined);
+    } catch (error) {
+      console.error(error);
     }
   }
 
   return (
-    <section className="container flex min-h-screen flex-col">
+    <section className="container flex flex-col">
       <div className="flex items-center justify-between">
         <h2>Create a post</h2>
+
         <Button
           className="text-xl"
           onClick={() => handleCreatePost()}
@@ -85,6 +111,47 @@ function NewPostPage() {
             "✨ Post"
           )}
         </Button>
+      </div>
+      <div className="my-3 flex flex-col gap-4 rounded-xl border-2 border-dashed border-blue-600 p-4">
+        {pictureUrl ? (
+          <Button variant="destructive" onClick={() => handleDeleteImage()}>
+            {deleteImageMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting...
+              </>
+            ) : (
+              "🗑️ Delete image"
+            )}
+          </Button>
+        ) : (
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              setPictureUrl(res[0]!.url);
+              toast.success("Image uploaded", {
+                icon: "🚀",
+                description: "Image uploaded successfully",
+              });
+            }}
+            onUploadError={(error: Error) => {
+              toast.error("Error uploading image", {
+                description: error.message,
+                icon: "❌",
+              });
+            }}
+            className="my-2 justify-self-start"
+          />
+        )}
+
+        {pictureUrl && (
+          <Image
+            src={pictureUrl}
+            width={2048}
+            height={1024}
+            alt="post picture"
+            className="w-full"
+          />
+        )}
       </div>
       <div className="my-6">
         <Label htmlFor="post-title">Post title</Label>
@@ -103,34 +170,21 @@ function NewPostPage() {
           disabled={isPending}
         />
       </div>
-      <div className="my-3 flex gap-4">
-        <UploadButton
-          endpoint="imageUploader"
-          onClientUploadComplete={(res) => {
-            setPictureUrl(res[0]!.url);
-            toast.success("Image uploaded", {
-              icon: "🚀",
-              description: "Image uploaded successfully",
-            });
-          }}
-          onUploadError={(error: Error) => {
-            toast.error("Error uploading image", {
-              description: error.message,
-              icon: "❌",
-            });
-          }}
-          className="my-2 justify-self-start"
-        />
-        {pictureUrl && (
-          <Image src={pictureUrl} width={200} height={200} alt="post picture" />
-        )}
-      </div>
+
       {/* <RichTextEditor
         content={content}
         setContent={setContent}
         disabled={isPending}
       /> */}
-      <Editor onChange={setBlocks} />
+
+      <div className="my-4 h-full">
+        <Label htmlFor="post-block" className="mb-2">
+          Post content
+        </Label>
+        <div className="h-full rounded border" id="post-block">
+          <Editor onChange={setBlocks} />
+        </div>
+      </div>
     </section>
   );
 }

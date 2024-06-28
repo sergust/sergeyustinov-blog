@@ -1,4 +1,3 @@
-import { Block } from "@blocknote/core";
 import { z } from "zod";
 
 import {
@@ -6,16 +5,9 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
+import { utapi } from "@/server/uploadthing";
 
 export const postRouter = createTRPCRouter({
-  // hello: publicProcedure
-  //   .input(z.object({ text: z.string() }))
-  //   .query(({ input }) => {
-  //     return {
-  //       greeting: `Hello ${input.text}`,
-  //     };
-  //   }),
-
   create: protectedProcedure
     .input(
       z.object({
@@ -56,4 +48,10 @@ export const postRouter = createTRPCRouter({
 
     return previews;
   }),
+
+  deleteImage: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      return await utapi.deleteFiles(input);
+    }),
 });
