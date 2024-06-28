@@ -71,7 +71,7 @@
     @apply box-border border-border;
   }
   body {
-    @apply h-screen bg-background text-foreground;
+    @apply h-full bg-background text-foreground;
   }
 
   h2 {
