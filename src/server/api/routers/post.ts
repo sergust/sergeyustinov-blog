@@ -48,10 +48,4 @@ export const postRouter = createTRPCRouter({
 
     return previews;
   }),
-
-  deleteImage: protectedProcedure
-    .input(z.string())
-    .mutation(async ({ input }) => {
-      return await utapi.deleteFiles(input);
-    }),
 });

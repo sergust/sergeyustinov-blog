@@ -25,7 +25,10 @@ const PostCard: React.FC<CreatePostOutput> = (post) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-700">{post.content}...</p>
+        <p
+          className="text-gray-700"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        ></p>
         <Link href={`/posts/${post.slug}`}>
           <span className="mt-2 inline-block text-blue-500 hover:underline">
             Read more

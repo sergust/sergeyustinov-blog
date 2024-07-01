@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -24,6 +24,7 @@ function NewPostPage() {
     [],
   );
   const [blocks, setBlocks] = useState<Block[]>([]);
+  const [htmlPost, setHtmlPost] = useState<string>("");
 
   const [post, setPost] = useState({
     title: "",
@@ -51,7 +52,7 @@ function NewPostPage() {
     },
   });
 
-  const deleteImageMutation = api.post.deleteImage.useMutation({
+  const deleteImageMutation = api.uploadThing.deleteImage.useMutation({
     onSuccess() {
       toast.success("Image deleted!", {
         description: `Image was deleted successfully`,
@@ -73,7 +74,7 @@ function NewPostPage() {
       const response = await createPostMutation.mutateAsync({
         title: post.title,
         slug: post.slug,
-        content: JSON.stringify(blocks),
+        content: htmlPost,
         pictureUrl: pictureUrl || "",
       });
       redirect(`/admin/posts/${response.id}`);
@@ -182,7 +183,7 @@ function NewPostPage() {
           Post content
         </Label>
         <div className="h-full rounded border" id="post-block">
-          <Editor onChange={setBlocks} />
+          <Editor onDocumentChange={setBlocks} onHTMLChange={setHtmlPost} />
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { type PartialBlock, type BlockNoteEditor } from "@blocknote/core";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
@@ -12,12 +12,14 @@ import { uploadFiles } from "@/utils/uploadthing";
 import { toast } from "sonner";
 
 interface EditorProps {
-  onChange: (document: unknown) => void;
+  onDocumentChange: (document: unknown) => void;
+  onHTMLChange: (html: string) => void;
   initialContent?: string;
   editable?: boolean;
 }
 const Editor: React.FC<EditorProps> = ({
-  onChange,
+  onDocumentChange,
+  onHTMLChange,
   initialContent,
   editable,
 }) => {
@@ -38,14 +40,18 @@ const Editor: React.FC<EditorProps> = ({
     },
   });
 
+  const onChange = async () => {
+    onDocumentChange(editor.document);
+    const html = await editor.blocksToHTMLLossy(editor.document);
+    onHTMLChange(html);
+  };
+
   return (
     <div className="my-4">
       <BlockNoteView
         editor={editor}
         editable={editable}
-        onChange={() => {
-          onChange(editor.document);
-        }}
+        onChange={onChange}
         theme={systemTheme}
       />
     </div>
